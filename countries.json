@@ -1,0 +1,67 @@
+[
+  {
+    "country": "India",
+    "locations": [
+      {
+        "state": "Kerala",
+        "latitude": 10.8505,
+        "longitude": 76.2711,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Tamil Nadu",
+        "latitude": 11.1271,
+        "longitude": 78.6569,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Karnataka",
+        "latitude": 15.3173,
+        "longitude": 75.7139,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Maharashtra",
+        "latitude": 19.7515,
+        "longitude": 75.7139,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Uttar Pradesh",
+        "latitude": 26.8467,
+        "longitude": 80.9462,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Rajasthan",
+        "latitude": 27.0238,
+        "longitude": 74.2179,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "West Bengal",
+        "latitude": 22.9868,
+        "longitude": 87.8550,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Gujarat",
+        "latitude": 22.2587,
+        "longitude": 71.1924,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Punjab",
+        "latitude": 31.1471,
+        "longitude": 75.3412,
+        "timezone": "Asia/Kolkata"
+      },
+      {
+        "state": "Delhi",
+        "latitude": 28.7041,
+        "longitude": 77.1025,
+        "timezone": "Asia/Kolkata"
+      }
+    ]
+  }
+]
