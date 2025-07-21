@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)  # ✅ Allow requests from frontend
 
 # Load countries.json once at startup
-with open(os.path.join("..", "data", "countries.json"), "r", encoding="utf-8") as f:
+with open("countries.json", "r", encoding="utf-8") as f:
     country_data = json.load(f)
 
 @app.route('/sun-times', methods=['POST'])
