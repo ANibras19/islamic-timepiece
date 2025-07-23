@@ -65,6 +65,21 @@ def get_sun_times():
         islamic_hour = int(elapsed_seconds // hour_length) + 1
         islamic_hour = max(1, min(12, islamic_hour))
 
+        # Generate Islamic hour blocks with start, end, and ruling planet
+        hour_blocks = []
+        planet_table = dayHours if period == "Day" else nightHours
+        planets = planet_table[weekday]
+
+        for i in range(12):
+            hour_start = start + timedelta(seconds=i * hour_length)
+            hour_end = start + timedelta(seconds=(i + 1) * hour_length)
+            hour_blocks.append({
+                "hour": i + 1,
+                "start": hour_start.strftime("%H:%M"),
+                "end": hour_end.strftime("%H:%M"),
+                "planet": planets[i]
+            })
+
         return jsonify({
             "date": now.strftime("%Y-%m-%d"),
             "time": now.strftime("%H:%M:%S"),
@@ -75,7 +90,8 @@ def get_sun_times():
             "islamic_hour": islamic_hour,
             "start": start.isoformat(),
             "end": end.isoformat(),
-            "timezone": match["timezone"]
+            "timezone": match["timezone"], 
+            "hour_blocks": hour_blocks
         })
 
     except Exception as e:
