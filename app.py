@@ -5,6 +5,7 @@ from astral.sun import sun
 from datetime import datetime, timedelta
 import pytz
 import json
+import traceback
 import os
 
 app = Flask(__name__)
@@ -95,6 +96,7 @@ def get_sun_times():
         })
 
     except Exception as e:
+        print("ERROR:", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
