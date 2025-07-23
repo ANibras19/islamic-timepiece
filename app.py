@@ -15,6 +15,28 @@ CORS(app)
 with open("countries.json", "r", encoding="utf-8") as f:
     country_data = json.load(f)
 
+# Planet ruling each hour of the day
+dayHours = {
+    "Sunday":    ["Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn"],
+    "Monday":    ["Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun"],
+    "Tuesday":   ["Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon"],
+    "Wednesday": ["Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars"],
+    "Thursday":  ["Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury"],
+    "Friday":    ["Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter"],
+    "Saturday":  ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus"]
+}
+
+# Night hours rotate forward (e.g. Thursday night = Sunday day hours)
+nightHours = {
+    "Sunday":    dayHours["Monday"],
+    "Monday":    dayHours["Tuesday"],
+    "Tuesday":   dayHours["Wednesday"],
+    "Wednesday": dayHours["Thursday"],
+    "Thursday":  dayHours["Friday"],
+    "Friday":    dayHours["Saturday"],
+    "Saturday":  dayHours["Sunday"]
+}
+
 @app.route('/sun-times', methods=['POST'])
 def get_sun_times():
     data = request.json
