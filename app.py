@@ -17,15 +17,16 @@ with open("countries.json", "r", encoding="utf-8") as f:
 @app.route('/sun-times', methods=['POST'])
 def get_sun_times():
     data = request.json
+    requested_country = data.get("country")
     requested_state = data.get("state")
 
-    india = next((c for c in country_data if c["country"] == "India"), None)
-    if not india:
-        return jsonify({"error": "India not found in data"}), 400
+    country = next((c for c in country_data if c["country"].lower() == requested_country.lower()), None)
+    if not country:
+        return jsonify({"error": f"Country '{requested_country}' not found"}), 400
 
-    match = next((loc for loc in india["locations"] if loc["state"].lower() == requested_state.lower()), None)
+    match = next((loc for loc in country["locations"] if loc["state"].lower() == requested_state.lower()), None)
     if not match:
-        return jsonify({"error": f"State '{requested_state}' not found"}), 404
+        return jsonify({"error": f"State/City '{requested_state}' not found in {requested_country}"}), 404
 
     try:
         tz = pytz.timezone("Asia/Kolkata")
