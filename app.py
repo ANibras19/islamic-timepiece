@@ -28,13 +28,13 @@ dayHours = {
 
 # Night hours rotate forward (e.g. Thursday night = Sunday day hours)
 nightHours = {
-    "Sunday":    dayHours["Monday"],
-    "Monday":    dayHours["Tuesday"],
-    "Tuesday":   dayHours["Wednesday"],
-    "Wednesday": dayHours["Thursday"],
-    "Thursday":  dayHours["Friday"],
-    "Friday":    dayHours["Saturday"],
-    "Saturday":  dayHours["Sunday"]
+    "Sunday":    dayHours["Wednesday"],
+    "Monday":    dayHours["Thursday"],
+    "Tuesday":   dayHours["Friday"],
+    "Wednesday": dayHours["Saturday"],
+    "Thursday":  dayHours["Sunday"],
+    "Friday":    dayHours["Monday"],
+    "Saturday":  dayHours["Tuesday"]
 }
 
 @app.route('/sun-times', methods=['POST'])
