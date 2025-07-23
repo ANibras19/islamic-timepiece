@@ -99,7 +99,10 @@ def get_sun_times():
             "period": period,
             "islamic_hour": islamic_hour,
             "planet_of_day": day_ruler,
-            "planet_of_hour": planet_of_hour
+            "planet_of_hour": planet_of_hour,
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "timezone": match["timezone"]
         })
 
     except Exception as e:
