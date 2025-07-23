@@ -66,7 +66,7 @@ def get_sun_times():
         # Planet of the Day (fixed per weekday)
         weekday = now.strftime('%A')
         if period == "Night":
-            weekday = (now + timedelta(days=1)).strftime('%A')
+            weekday = (now - timedelta(days=1)).strftime('%A')
 
         day_ruler = {
             "Sunday": "Sun",
