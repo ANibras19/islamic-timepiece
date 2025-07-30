@@ -83,7 +83,8 @@ def get_sun_times():
                     "end": hour_end.strftime("%H:%M"),
                     "planet": night_planets[j],
                     "period": "Night",
-                    "date": (day + timedelta(days=1)).strftime("%Y-%m-%d")
+                    "date": (day + timedelta(days=1)).strftime("%Y-%m-%d"),
+                    "day": night_weekday
                 }
                 if night_start <= now < night_end and hour_start <= now < hour_end:
                     current_hour = j + 1
@@ -111,7 +112,8 @@ def get_sun_times():
                     "end": hour_end.strftime("%H:%M"),
                     "planet": day_planets[j],
                     "period": "Day",
-                    "date": (day + timedelta(days=1)).strftime("%Y-%m-%d")
+                    "date": (day + timedelta(days=1)).strftime("%Y-%m-%d"),
+                    "day": weekday
                 }
                 if sunrise <= now < sunset and hour_start <= now < hour_end:
                     current_hour = j + 1
@@ -133,7 +135,6 @@ def get_sun_times():
     except Exception as e:
         print("ERROR:", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
