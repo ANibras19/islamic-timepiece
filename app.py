@@ -56,65 +56,76 @@ def get_sun_times():
         now = datetime.now(tz)
 
         loc = LocationInfo(match["state"], requested_country, match["timezone"], match["latitude"], match["longitude"])
-        s_today = sun(loc.observer, date=now.date(), tzinfo=tz)
-        sunrise = s_today["sunrise"]
-        sunset = s_today["sunset"]
 
-        # Determine Islamic period and hour block
-        if sunrise <= now < sunset:
-            period = "Day"
+        all_blocks = []
+        current_hour_index = None
+        current_period_id = None
+
+        for offset in range(-3, 8):  # from 3 days back to 7 days ahead
+            day = now.date() + timedelta(days=offset)
+            s = sun(loc.observer, date=day, tzinfo=tz)
+            sunrise = s["sunrise"]
+            sunset = s["sunset"]
+
+            # DAY block
+            weekday = sunrise.strftime("%A")
             start = sunrise
             end = sunset
-            weekday = now.strftime('%A')  # Day is today
-        else:
-            period = "Night"
-            if now >= sunset:
-                tomorrow = now + timedelta(days=1)
-                s_tomorrow = sun(loc.observer, date=tomorrow.date(), tzinfo=tz)
-                start = sunset
-                end = s_tomorrow["sunrise"]
-                weekday = tomorrow.strftime('%A')  # Night belongs to next day
-            else:
-                yesterday = now - timedelta(days=1)
-                s_yesterday = sun(loc.observer, date=yesterday.date(), tzinfo=tz)
-                start = s_yesterday["sunset"]
-                end = sunrise
-                weekday = now.strftime('%A')  # Already past midnight, still night of today
+            planet_table = dayHours
+            planets = planet_table[weekday]
+            for i in range(12):
+                hour_start = start + timedelta(seconds=i * ((end - start).total_seconds() / 12))
+                hour_end = start + timedelta(seconds=(i + 1) * ((end - start).total_seconds() / 12))
+                is_now = hour_start <= now < hour_end
+                block = {
+                    "hour": i + 1,
+                    "start": hour_start.strftime("%H:%M"),
+                    "end": hour_end.strftime("%H:%M"),
+                    "planet": planets[i],
+                    "period": "Day",
+                    "weekday": weekday
+                }
+                if is_now:
+                    current_hour_index = len(all_blocks)
+                all_blocks.append(block)
 
-        # Calculate Islamic hour number (1–12)
-        total_seconds = (end - start).total_seconds()
-        elapsed_seconds = (now - start).total_seconds()
-        hour_length = total_seconds / 12
-        islamic_hour = int(elapsed_seconds // hour_length) + 1
-        islamic_hour = max(1, min(12, islamic_hour))
-
-        # Generate Islamic hour blocks with start, end, and ruling planet
-        hour_blocks = []
-        planet_table = dayHours if period == "Day" else nightHours
-        planets = planet_table[weekday]
-
-        for i in range(12):
-            hour_start = start + timedelta(seconds=i * hour_length)
-            hour_end = start + timedelta(seconds=(i + 1) * hour_length)
-            hour_blocks.append({
-                "hour": i + 1,
-                "start": hour_start.strftime("%H:%M"),
-                "end": hour_end.strftime("%H:%M"),
-                "planet": planets[i]
-            })
+            # NIGHT block (sunset → next day's sunrise)
+            next_day = day + timedelta(days=1)
+            s_next = sun(loc.observer, date=next_day, tzinfo=tz)
+            next_sunrise = s_next["sunrise"]
+            next_weekday = next_sunrise.strftime("%A")
+            start = sunset
+            end = next_sunrise
+            planet_table = nightHours
+            planets = planet_table[next_weekday]
+            for i in range(12):
+                hour_start = start + timedelta(seconds=i * ((end - start).total_seconds() / 12))
+                hour_end = start + timedelta(seconds=(i + 1) * ((end - start).total_seconds() / 12))
+                is_now = hour_start <= now < hour_end
+                block = {
+                    "hour": i + 1,
+                    "start": hour_start.strftime("%H:%M"),
+                    "end": hour_end.strftime("%H:%M"),
+                    "planet": planets[i],
+                    "period": "Night",
+                    "weekday": next_weekday
+                }
+                if is_now:
+                    current_hour_index = len(all_blocks)
+                all_blocks.append(block)
 
         return jsonify({
             "date": now.strftime("%Y-%m-%d"),
             "time": now.strftime("%H:%M:%S"),
             "sunrise": sunrise.strftime("%H:%M:%S"),
             "sunset": sunset.strftime("%H:%M:%S"),
-            "day_of_week": weekday,
-            "period": period,
-            "islamic_hour": islamic_hour,
-            "start": start.isoformat(),
-            "end": end.isoformat(),
-            "timezone": match["timezone"], 
-            "hour_blocks": hour_blocks
+            "day_of_week": now.strftime('%A'),
+            "period": "Day" if s["sunrise"] <= now < s["sunset"] else "Night",
+            "islamic_hour": (current_hour_index % 12 + 1) if current_hour_index is not None else None,
+            "start": all_blocks[current_hour_index]["start"] if current_hour_index is not None else None,
+            "end": all_blocks[current_hour_index]["end"] if current_hour_index is not None else None,
+            "timezone": match["timezone"],
+            "hour_blocks": all_blocks
         })
 
     except Exception as e:
